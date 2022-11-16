@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Summary: Explain how the current helm version is set
+set -e
+[ -n "$ENV_DEBUG" ] && set -x
+
+unset GLOBALENV_VERSION_ORIGIN
+
+if [ -n "$GLOBALENV_VERSION_ORIGIN" ]; then
+  echo "$GLOBALENV_VERSION_ORIGIN"
+elif [ -n "$GLOBALENV_VERSION" ]; then
+  echo "GLOBALENV_VERSION environment variable"
+else
+  binary=${binary} env-version-file
+fi

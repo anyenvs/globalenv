@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Summary: Display the directory where helm exists
+# Usage: helmfilenv bin-path
+#
+# Displays the directory where helm is installed.
+
+set -e
+[ -n "$ENV_DEBUG" ] && set -x
+binary=${binary//env/}
+version=${1//*-/}
+
+remove_from_path() {
+  local path_to_remove="$1"
+  local path_before
+  local result=":${PATH//\~/$HOME}:"
+  while [ "$path_before" != "$result" ]; do
+    path_before="$result"
+    result="${result//:$path_to_remove:/:}"
+  done
+  result="${result%:}"
+  echo "${result#:}"
+}
+
+#set -x
+if [ -n "$version" ]; then
+  export GLOBALENV_VERSION="$version"
+elif [ -z "$GLOBALENV_VERSION" ]; then
+  GLOBALENV_VERSION="$(binary=${binary} env-version-name)"
+fi
+
+if [ "$GLOBALENV_VERSION" = "system" ]; then
+  #SYSTEM_GLOBAL_PATH=$(PATH=$(binary=$binary remove_from_path "${GLOBALENV_ROOT}/bin") eval "which {${binary//env/},${binary//env/}ctl,${binary//env/}e}" ) || true
+  #SYSTEM_GLOBAL_PATH=$(PATH="$(binary=$binary remove_from_path "${GLOBALENV_ROOT}/bin")" command -v {${binary//env/},${binary//env/}ctl,${binary//env/}e}) || true
+  #SYSTEM_GLOBAL_PATH=$(PATH="$(binary=$binary remove_from_path "*globalenv/bin")" command -v {${binary//env/},${binary//env/}ctl,${binary//env/}e}) || true
+  SYSTEM_GLOBAL_PATH=$(PATH=$(binary=$binary remove_from_path "*globalenv/bin") eval "which {${binary//env/},${binary//env/}ctl,${binary//env/}e}" ) || true
+  if GLOBAL_BIN_PATH="${SYSTEM_GLOBAL_PATH}"; then
+    GLOBAL_BIN_PATH="${SYSTEM_GLOBAL_PATH%/*}"
+    echo "${GLOBAL_BIN_PATH:-/}"
+    exit
+  else
+    echo "binary=${binary}: system version not found in PATH" >&2
+    exit 1
+  fi
+fi
+
+#GLOBALENV_BIN_PATH="${GLOBALENV_ROOT}/versions/${binary}*${GLOBALENV_VERSION}/bin"
+#GLOBALENV_BIN_PATH=$(echo ${GLOBALENV_ROOT}/versions/${GLOBALENV_VERSION}/bin )
+GLOBALENV_BIN_PATH=$(echo ${GLOBALENV_ROOT}/versions/${binary}*${GLOBALENV_VERSION}/bin )
+if [ ! -d "$GLOBALENV_BIN_PATH" ]; then
+  echo "${binary}: version \`${GLOBALENV_VERSION}' is not installed" >&2
+  exit 1
+fi
+
+echo "$GLOBALENV_BIN_PATH"

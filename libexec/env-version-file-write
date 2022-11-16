@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Usage: helmfilenv version-file-write <file> <version>
+
+set -e
+[ -n "$ENV_DEBUG" ] && set -x
+
+GLOBALENV_VERSION_FILE="$1"
+GLOBALENV_VERSION="${2//*-/}"
+
+if [ -z "$GLOBALENV_VERSION" ] || [ -z "$GLOBALENV_VERSION_FILE" ]; then
+  binary=$binary env-help --usage version-file-write >&2
+  exit 1
+fi
+
+# Make sure the specified version is installed.
+binary=$binary env-bin-path "$GLOBALENV_VERSION" > /dev/null
+
+# Write the version out to disk.
+#set -x
+binarytmp=${binary//env/}
+grep -q ${binarytmp} "$GLOBALENV_VERSION_FILE" || echo ${binary}-$GLOBALENV_VERSION >> "$GLOBALENV_VERSION_FILE"
+grep -q ${binarytmp} "$GLOBALENV_VERSION_FILE" && sed -i '' -e "s/${binarytmp}.*/${binary}-$GLOBALENV_VERSION/" "$GLOBALENV_VERSION_FILE" > /dev/null
+#set +x

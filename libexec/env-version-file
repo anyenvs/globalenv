@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Usage: helmfilenv version-file [<dir>]
+# Summary: Detect the file that sets the current helmfilenv version
+set -e
+[ -n "$ENV_DEBUG" ] && set -x
+
+target_dir="$1"
+binary=${binary//env/}
+
+find_local_version_file() {
+  local root="$1"
+  while ! [[ "$root" =~ ^//[^/]*$ ]]; do
+    env_path=$(echo ${root}/.${binary}*-version)
+    if [ -s "${env_path}" ]; then
+      echo ${env_path}*
+      return 0
+    fi
+    [ -n "$root" ] || break
+    root="${root%/*}"
+  done
+  return 1
+}
+
+if [ -n "$target_dir" ]; then
+  binary=${binary} find_local_version_file "$target_dir"
+else
+  binary=${binary} find_local_version_file "$GLOBALENV_DIR" || {
+    [ "$GLOBALENV_DIR" != "$PWD" ] && binary=${binary} find_local_version_file "$PWD"
+  } || echo "${GLOBALENV_ROOT}/version"
+fi
