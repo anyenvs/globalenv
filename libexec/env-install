@@ -50,13 +50,14 @@ mkdir -p "${dst_path}/bin" || error_and_die "Failed to make directory ${dst_path
 
 #URL=${GLOBALENV_REPOS[${binary}_download]}
 _URLS=( $( wget -qO- "${GLOBALENV_REPO[@]}?simple=yes&per_page=1000" | jq -r '.[].assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'") and ( contains("'$(_myARCH)'") or contains("'$(_myMARCH)'") )).browser_download_url' ) )
-test -n "${GLOBALENV_REPOS[${binary}_download]}" -a "${#_URLS[@]}" == "1" && { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+#test -n "${GLOBALENV_REPOS[${binary}_download]}" -a "${#_URLS[@]}" == "1" && { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
 #test -z "${GLOBALENV_REPOS[${binary}_bin]}" -a ${#_URLS[@]} -gt 1 && { eval "for url in ${_URLS[@]} ;do wget -qO ${dst_path}/bin/\$(echo \${url##*/} | sed \"s/_$(_myOS)_$(_myARCH)//\") \$url ;done" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+test "${#_URLS[@]}" == "1" && { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
 test ${#_URLS[@]} -gt 1 && { eval "for url in ${_URLS[@]} ;do wget -qO ${dst_path}/bin/\$(echo \${url##*/} | sed \"s/_$(_myOS)_$(_myARCH)//\") \$url ;done" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
 test -n "${GLOBALENV_REPOS[${binary}_script]}" && ( eval "${GLOBALENV_REPOS[${binary}_script]}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed"; } )
 test -n "${GLOBALENV_REPOS[${binary}_postscript]}" && ( eval "${GLOBALENV_REPOS[${binary}_postscript]}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed"; } )
 #https://github.com/roboll/helmfile/releases/download/v${version##v}/helmfile_$(uname -s)_$(uname -m | sed 's/x86_64/amd64/g') >&2 || error_and_die "Install failed"
-chmod +x "${dst_path}/bin"/${GLOBALENV_BIN}
+chmod +x "${dst_path}/bin"/${GLOBALENV_BIN:-*}
 
 # Autocompletion
 test -f ${dst_path}/tools/${GLOBALENV_BIN}.${SHELL##*/} && cp -fv ${dst_path}/tools/${GLOBALENV_BIN}.${SHELL##*/} ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/}

@@ -22,7 +22,7 @@ fi
 
 [ -n "${version##v}" ] || error_and_die "Version is not specified"
 
-dst_path="$(ls -d ${GLOBALENV_ROOT}/versions/${binary//env/}*${version##v} 2>/dev/null)"
+dst_path="$(ls -d ${GLOBALENV_ROOT}/versions/*${version##v} 2>/dev/null)"
 if [ -d "${dst_path}/bin" ]; then
   info "Uninstall ${binary//env/} ${version##v}"
   test -n "${version_file}" && grep -v ${version##v} ${version_file} > ${version_file}2 && cat ${version_file}2 > ${version_file}

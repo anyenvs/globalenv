@@ -17,7 +17,8 @@ fi
 
 version_exists() {
   local version="$1"
-  [ -d ${GLOBALENV_ROOT}/versions/${binary}*${version} ]
+  #[ -d ${GLOBALENV_ROOT}/versions/${binary}*${version} ]
+  [ -d ${GLOBALENV_ROOT}/versions/*${version} ]
 }
 
 if version_exists "$GLOBALENV_VERSION"; then
