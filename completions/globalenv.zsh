@@ -2,16 +2,16 @@ if [[ ! -o interactive ]]; then
     return
 fi
 
-compctl -K _istioenv istioenv
+compctl -K _globalenv globalenv
 
-_istioenv() {
+_globalenv() {
   local words completions
   read -cA words
 
   if [ "${#words}" -eq 2 ]; then
-    completions="$(istioenv commands)"
+    completions="$(globalenv commands)"
   else
-    completions="$(istioenv completions ${words[2,-2]})"
+    completions="$(globalenv completions ${words[2,-2]})"
   fi
 
   reply=(${(ps:\n:)completions})

@@ -46,7 +46,7 @@ fi
 #GLOBALENV_BIN_PATH="${GLOBALENV_ROOT}/versions/${binary}*${GLOBALENV_VERSION}/bin"
 #GLOBALENV_BIN_PATH=$(echo ${GLOBALENV_ROOT}/versions/${GLOBALENV_VERSION}/bin )
 #GLOBALENV_BIN_PATH=$(echo ${GLOBALENV_ROOT}/versions/${binary}*${GLOBALENV_VERSION}/bin )
-GLOBALENV_BIN_PATH=$(echo ${GLOBALENV_ROOT}/versions/*${GLOBALENV_VERSION}/bin )
+GLOBALENV_BIN_PATH=( $(echo ${GLOBALENV_ROOT}/versions/*${GLOBALENV_VERSION}/bin ) )
 if [ ! -d "$GLOBALENV_BIN_PATH" ]; then
   echo "${binary}: version \`${GLOBALENV_VERSION}' is not installed" >&2
   exit 1

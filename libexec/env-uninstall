@@ -22,12 +22,12 @@ fi
 
 [ -n "${version##v}" ] || error_and_die "Version is not specified"
 
-dst_path="$(ls -d ${GLOBALENV_ROOT}/versions/*${version##v} 2>/dev/null)"
+dst_path=( $(ls -d ${GLOBALENV_ROOT}/versions/*${version##v} 2>/dev/null) )
 if [ -d "${dst_path}/bin" ]; then
   info "Uninstall ${binary//env/} ${version##v}"
   test -n "${version_file}" && grep -v ${version##v} ${version_file} > ${version_file}2 && cat ${version_file}2 > ${version_file}
   grep -v ${version##v} ${GLOBALENV_ROOT}/version > ${GLOBALENV_ROOT}/version2 && cat ${GLOBALENV_ROOT}/version2 > ${GLOBALENV_ROOT}/version
-  rm -f ${GLOBALENV_ROOT}/version2 ${version_file}2
-  rm -r "${dst_path}"
+  test -d ${GLOBALENV_ROOT}/version2 -o -d ${version_file:+${version_file}2} && rm -f ${GLOBALENV_ROOT}/version2 ${version_file:+${version_file}2}
+  test -d "${dst_path}" && rm -r ${dst_path[@]}
   info "\033[0;32m${binary//env/} ${version##v} is successfully uninstalled\033[0;39m"
 fi

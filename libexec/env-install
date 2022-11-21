@@ -39,14 +39,14 @@ test "$1" == "--list" -o "$1" == "-l" && {
 }
 
 dst_root="${GLOBALENV_ROOT}/versions"
-dst_path="${GLOBALENV_ROOT}/versions/${GLOBALENV_BIN}-${version##v}"
-if [ -f "${dst_path}/bin/${GLOBALENV_BIN}" ]; then
+dst_path=$(echo ${GLOBALENV_ROOT}/versions/${GLOBALENV_BIN}-${version##v})
+if [ -f ${dst_path}/bin/${GLOBALENV_BIN}* ]; then
   echo "${GLOBALENV_BIN} ${version##v} is already installed"
   exit 0
 fi
 
 info "Installing ${GLOBALENV_BIN} ${version##v}"
-mkdir -p "${dst_path}/bin" || error_and_die "Failed to make directory ${dst_path}"
+mkdir -p ${dst_path}/bin || error_and_die "Failed to make directory ${dst_path}"
 
 #URL=${GLOBALENV_REPOS[${binary}_download]}
 _URLS=( $( wget -qO- "${GLOBALENV_REPO[@]}?simple=yes&per_page=1000" | jq -r '.[].assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'") and ( contains("'$(_myARCH)'") or contains("'$(_myMARCH)'") )).browser_download_url' ) )
@@ -62,7 +62,7 @@ chmod +x "${dst_path}/bin"/${GLOBALENV_BIN:-*}
 # Autocompletion
 test -f ${dst_path}/tools/${GLOBALENV_BIN}.${SHELL##*/} && cp -fv ${dst_path}/tools/${GLOBALENV_BIN}.${SHELL##*/} ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/}
 test -n "${GLOBALENV_REPOS[${binary}_completion]}" && wget -qO ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/} ${GLOBALENV_REPOS[${binary}_completion]}
-test -f ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/} && . ${GLOBALENV_ROOT}/completions/*.${SHELL##*/}
-test -f ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} && . ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/}
+test -f ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/} && . ${GLOBALENV_ROOT}/completions/*.${SHELL##*/} &>/dev/null
+test -f ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} && . ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} &>/dev/null
 
 info "Installation of ${GLOBALENV_BIN} ${version##v} successful"
