@@ -14,6 +14,7 @@
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 # Provide env completions
 if [ "$1" = "--complete" ]; then

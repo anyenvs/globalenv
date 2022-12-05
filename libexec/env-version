@@ -6,5 +6,6 @@
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 echo "$(binary=$binary env-version-name) (set by $(env-version-origin))"

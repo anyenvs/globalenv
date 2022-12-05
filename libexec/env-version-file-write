@@ -3,6 +3,7 @@
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 GLOBALENV_VERSION_FILE="$1"
 GLOBALENV_VERSION="${2//*-/}"

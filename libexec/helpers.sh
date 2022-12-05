@@ -1,3 +1,12 @@
+##
+## Helper functions
+##
+version=${version:-${1//*-/}}
+binary=${binary[@]}
+binshort=${binary//env*/}
+#echo "$@"
+#echo binary=${binary[@]}
+
 function error_and_die() {
   echo -e "${binary}: $(basename ${0}): \033[0;31m[ERROR] ${1}\033[0;39m" >&2
   exit 1

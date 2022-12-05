@@ -11,6 +11,7 @@
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 version="0.1.1"
 git_revision=""

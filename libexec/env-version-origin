@@ -2,6 +2,7 @@
 # Summary: Explain how the current helm version is set
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 unset GLOBALENV_VERSION_ORIGIN
 

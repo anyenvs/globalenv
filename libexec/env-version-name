@@ -2,9 +2,7 @@
 # Summary: Show the current version
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
-
-binary=${binary//env/}
-version=${1//*-/}
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 if [ -z "$GLOBALENV_VERSION" ]; then
   GLOBALENV_VERSION_FILE="$(binary=$binary env-version-file)"
@@ -17,7 +15,7 @@ if [ -z "$GLOBALENV_VERSION" ] || [ "$GLOBALENV_VERSION" = "system" ]; then
 fi
 
 version_exists() {
-  local version="$version"
+  local version="$1"
   GLOBALENV_ROOT_PATHS=( $(echo ${GLOBALENV_ROOT}/versions/*${version}) )
   #[ -d ${GLOBALENV_ROOT}/versions/${binary}*${version} ]
   [ -d ${GLOBALENV_ROOT_PATHS} ]

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Summary: List all **envs available to anyenv
+# Usage: anyenv envs
+#
+# Lists all **env versions found in `$ANYENV_ROOT/envs/*'.
+
+#set -e
+[ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
+
+_PATH=( $(ls -d "${GLOBALENV_ROOT}/versions/${binary}"* 2>/dev/null || echo "${GLOBALENV_ROOT}/versions/"* ) )
+for path in "${_PATH[@]}"; do
+  if [ -d "$path" ]; then
+    echo "${path##*/}"
+  fi
+done

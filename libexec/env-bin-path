@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # Summary: Display the directory where helm exists
-# Usage: helmfilenv bin-path
+# Usage: globalenv bin-path
 #
 # Displays the directory where helm is installed.
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
-binary=${binary//env/}
-version=${1//*-/}
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 remove_from_path() {
   local path_to_remove="$1"
@@ -32,7 +31,7 @@ if [ "$GLOBALENV_VERSION" = "system" ]; then
   #SYSTEM_GLOBAL_PATH=$(PATH=$(binary=$binary remove_from_path "${GLOBALENV_ROOT}/bin") eval "which {${binary//env/},${binary//env/}ctl,${binary//env/}e}" ) || true
   #SYSTEM_GLOBAL_PATH=$(PATH="$(binary=$binary remove_from_path "${GLOBALENV_ROOT}/bin")" command -v {${binary//env/},${binary//env/}ctl,${binary//env/}e}) || true
   #SYSTEM_GLOBAL_PATH=$(PATH="$(binary=$binary remove_from_path "*globalenv/bin")" command -v {${binary//env/},${binary//env/}ctl,${binary//env/}e}) || true
-  SYSTEM_GLOBAL_PATH=$(PATH=$(binary=$binary remove_from_path "*globalenv/bin") eval "which {${binary//env/},${binary//env/}ctl,${binary//env/}e}" ) || true
+  SYSTEM_GLOBAL_PATH=$(PATH=$(binary=$binary remove_from_path "*globalenv/bin") eval "which {${binary},${binshort},${binshort}ctl,${binshort}e}" ) || true
   if GLOBAL_BIN_PATH="${SYSTEM_GLOBAL_PATH}"; then
     GLOBAL_BIN_PATH="${SYSTEM_GLOBAL_PATH%/*}"
     echo "${GLOBAL_BIN_PATH:-/}"
@@ -46,10 +45,12 @@ fi
 #GLOBALENV_BIN_PATH="${GLOBALENV_ROOT}/versions/${binary}*${GLOBALENV_VERSION}/bin"
 #GLOBALENV_BIN_PATH=$(echo ${GLOBALENV_ROOT}/versions/${GLOBALENV_VERSION}/bin )
 #GLOBALENV_BIN_PATH=$(echo ${GLOBALENV_ROOT}/versions/${binary}*${GLOBALENV_VERSION}/bin )
-GLOBALENV_BIN_PATH=( $(echo ${GLOBALENV_ROOT}/versions/*${GLOBALENV_VERSION}/bin ) )
-if [ ! -d "$GLOBALENV_BIN_PATH" ]; then
-  echo "${binary}: version \`${GLOBALENV_VERSION}' is not installed" >&2
-  exit 1
-fi
-
-echo "$GLOBALENV_BIN_PATH"
+#GLOBALENV_BIN_PATH=( $(ls -d ${GLOBALENV_ROOT}/versions/{${binary},${binshort}}*/bin 2>/dev/null || true) );
+GLOBALENV_BIN_PATH=( $(ls -d ${GLOBALENV_ROOT}/versions/*${GLOBALENV_VERSION}/bin 2>/dev/null || true) )
+for i in "${GLOBALENV_BIN_PATH[@]}"; do
+  if [ ! -d "$i" ]; then
+    echo "${binary}: version \`${GLOBALENV_VERSION}' is not installed" >&2
+    exit 1
+  fi
+done
+echo "${GLOBALENV_BIN_PATH[@]}"

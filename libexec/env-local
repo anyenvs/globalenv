@@ -19,9 +19,9 @@
 # The special version string `system' will use your default system helm.
 # Run `helmfilenv versions' for a list of available helm versions.
 
-echo binary=$binary
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
 # Provide env completions
 if [ "$1" = "--complete" ]; then

@@ -8,7 +8,7 @@ source ${GLOBALENV_ROOT}/libexec/helpers.sh
 [ "${#}" -gt 1 ] && error_and_die "usage: ${binary} install [<version>]"
 
 declare version
-version=${1//*-/}
+#version=${1//*-/}
 
 if [ -z "${version}" ]; then
   version_file="$(binary=${binary} env-version-file)"
@@ -21,8 +21,7 @@ fi
 
 test -f "${GLOBALENV_ROOT}/globalrepos.env" && . ${GLOBALENV_ROOT}/globalrepos.env || (error_and_die "Missing ${GLOBALENV_ROOT}/globalrepos.env"; exit 1)
 GLOBALENV_REPO="https://api.github.com/repos/${GLOBALENV_REPOS[${binary}]}/releases"
-GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]:-${binary//env/}}
-# GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]}
+GLOBALENV_BIN=${binary}
 
 ## globalenv install --list
 test "$1" == "--list" -o "$1" == "-l" && {
@@ -40,26 +39,41 @@ test "$1" == "--list" -o "$1" == "-l" && {
 
 dst_root="${GLOBALENV_ROOT}/versions"
 dst_path=$(echo ${GLOBALENV_ROOT}/versions/${GLOBALENV_BIN}-${version##v})
-if [ -f ${dst_path}/bin/${GLOBALENV_BIN}* ]; then
-  echo "${GLOBALENV_BIN} ${version##v} is already installed"
+if [ -f "${dst_path}/bin/${GLOBALENV_REPOS[${binary}_bin]:-*}" ]; then
+  echo "${GLOBALENV_REPOS[${binary}_bin]:-${binary}} ${version##v} is already installed"
   exit 0
 fi
 
-info "Installing ${GLOBALENV_BIN} ${version##v}"
+info "Installing ${GLOBALENV_REPOS[${binary}_bin]:-${binary}} ${version##v}"
 mkdir -p ${dst_path}/bin || error_and_die "Failed to make directory ${dst_path}"
 
 #URL=${GLOBALENV_REPOS[${binary}_download]}
-_URLS=( $( wget -qO- "${GLOBALENV_REPO[@]}?simple=yes&per_page=1000" | jq -r '.[].assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'") and ( contains("'$(_myARCH)'") or contains("'$(_myMARCH)'") )).browser_download_url' ) )
+test "$1" != "--list" -a "$1" != "-l" && {
+  next="${GLOBALENV_REPO}?simple=yes&per_page=100&page="
+  page=0
+  while true; do
+    page=$((page + 1))
+    versions=$(wget -qO- "${next}${page}" | jq -r '.[].tag_name' | xargs)
+    test -n "$versions" || break
+    _URLS=( $( wget -qO- "${next}${page}" | jq -r '.[].assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'") and ( contains("'$(_myARCH)'") or contains("'$(_myMARCH)'") )).browser_download_url' ) )
+    test -n "${_URLS}" && break
+  done
+  echo "${_URLS[@]}" ;
+  #exit 0 ;
+}
+
+GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]:-${binary}}
 #test -n "${GLOBALENV_REPOS[${binary}_download]}" -a "${#_URLS[@]}" == "1" && { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
-#test -z "${GLOBALENV_REPOS[${binary}_bin]}" -a ${#_URLS[@]} -gt 1 && { eval "for url in ${_URLS[@]} ;do wget -qO ${dst_path}/bin/\$(echo \${url##*/} | sed \"s/_$(_myOS)_$(_myARCH)//\") \$url ;done" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
 test "${#_URLS[@]}" == "1" && { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+#test -z "${GLOBALENV_REPOS[${binary}_bin]}" -a ${#_URLS[@]} -gt 1 && { eval "for url in ${_URLS[@]} ;do wget -qO ${dst_path}/bin/\$(echo \${url##*/} | sed \"s/_$(_myOS)_$(_myARCH)//\") \$url ;done" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
 test ${#_URLS[@]} -gt 1 && { eval "for url in ${_URLS[@]} ;do wget -qO ${dst_path}/bin/\$(echo \${url##*/} | sed \"s/_$(_myOS)_$(_myARCH)//\") \$url ;done" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
 test -n "${GLOBALENV_REPOS[${binary}_script]}" && ( eval "${GLOBALENV_REPOS[${binary}_script]}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed"; } )
 test -n "${GLOBALENV_REPOS[${binary}_postscript]}" && ( eval "${GLOBALENV_REPOS[${binary}_postscript]}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed"; } )
 #https://github.com/roboll/helmfile/releases/download/v${version##v}/helmfile_$(uname -s)_$(uname -m | sed 's/x86_64/amd64/g') >&2 || error_and_die "Install failed"
-chmod +x "${dst_path}/bin"/${GLOBALENV_BIN:-*}
+chmod +x "${dst_path}/bin"/${GLOBALENV_REPOS[${binary}_bin]:-*}
 
 # Autocompletion
+GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]:-${binary}}
 test -f ${dst_path}/tools/${GLOBALENV_BIN}.${SHELL##*/} && cp -fv ${dst_path}/tools/${GLOBALENV_BIN}.${SHELL##*/} ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/}
 test -n "${GLOBALENV_REPOS[${binary}_completion]}" && wget -qO ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/} ${GLOBALENV_REPOS[${binary}_completion]}
 test -f ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/} && . ${GLOBALENV_ROOT}/completions/*.${SHELL##*/} &>/dev/null

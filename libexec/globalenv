@@ -79,19 +79,20 @@ export PATH="${bin_path}:${PATH}"
 
 shopt -u nullglob
 
-binary="$(basename $0)"
+#binary=( "$(basename $0)" "terragrunt")
+binary=( "$(basename $0)" )
 command="$1"
 case "$command" in
 "" )
-  { binary=$binary env---version
-    binary=$binary env-help
+  { binary=${binary[@]} env---version
+    binary=${binary[@]} env-help
   } | abort
   ;;
 -v | --version )
-  binary=$binary exec env---version
+  binary=${binary[@]} exec env---version
   ;;
 -h | --help )
-  binary=$binary exec env-help
+  binary=${binary[@]} exec env-help
   ;;
 * )
   command_path="$(command -v "env-$command" || true)"
@@ -108,10 +109,10 @@ case "$command" in
     if [[ "$command" == "sh-"* ]]; then
       echo "$binary help \"$command\""
     else
-      binary=$binary exec env-help "$command"
+      binary=${binary[@]} exec env-help "$command"
     fi
   else
-      binary=$binary exec "$command_path" "$@"
+      binary=${binary[@]} exec "$command_path" "$@"
   fi
   ;;
 esac
