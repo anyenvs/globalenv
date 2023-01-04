@@ -20,5 +20,11 @@ binary=$binary env-bin-path "$GLOBALENV_VERSION" > /dev/null
 #set -x
 binarytmp=${binary//env/}
 grep -q ${binarytmp} "$GLOBALENV_VERSION_FILE" || echo ${binary}-$GLOBALENV_VERSION >> "$GLOBALENV_VERSION_FILE"
-grep -q ${binarytmp} "$GLOBALENV_VERSION_FILE" && sed -i '' -e "s/${binarytmp}.*/${binary}-$GLOBALENV_VERSION/" "$GLOBALENV_VERSION_FILE" > /dev/null
+case $(uname -s) in
+  Darwin)
+    grep -q ${binarytmp} "$GLOBALENV_VERSION_FILE" && sed -i '' -e "s/${binarytmp}.*/${binary}-$GLOBALENV_VERSION/" "$GLOBALENV_VERSION_FILE" > /dev/null ;;
+  Linux)
+    grep -q ${binarytmp} "$GLOBALENV_VERSION_FILE" && sed -i -e "s/${binarytmp}.*/${binary}-$GLOBALENV_VERSION/" "$GLOBALENV_VERSION_FILE" > /dev/null ;;
+  *) ;;
+esac
 #set +x
