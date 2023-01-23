@@ -1,7 +1,8 @@
 ##
 ## Helper functions
 ##
-version=${version:-${1//*-/}}
+#version=${version:-${1//*-/}}
+version=${version:-${1#[[:alpha:]]*-}}
 binary=${binary[@]}
 binshort=${binary//env*/}
 #echo "$@"
