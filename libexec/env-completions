@@ -5,9 +5,18 @@ set -e
 [ -n "$ENV_DEBUG" ] && set -x
 source ${GLOBALENV_ROOT}/libexec/helpers.sh
 
+env-complete() {
+    ## AutoCompletions
+    test -f "${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/}" && . ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} &>/dev/null
+    ENV_COMPLETIONS=( $(echo ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} ${GLOBALENV_ROOT}/completions/${binary//env/*}.${SHELL##*/} | tr ' ' '\n' | sort -u | tr '\n' ' ') )
+    test -n "${ENV_COMPLETIONS}" && ( echo . ${ENV_COMPLETIONS[@]} ; . ${ENV_COMPLETIONS[@]} >/dev/null )
+}
+
 COMMAND="$1"
 if [ -z "$COMMAND" ]; then
   binary=${binary} env-help --usage completions >&2
+  type -t env-complete >/dev/null || echo "Function: $_ not defined"
+  binary=${binary} env-complete
   exit 1
 fi
 

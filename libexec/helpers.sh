@@ -2,11 +2,15 @@
 ## Helper functions
 ##
 #version=${version:-${1//*-/}}
-version=${version:-${1#[[:alpha:]]*-}}
+#version=${version#[[:alpha:]]*-}
+version=$([[ ${1} == [[:digit:]]* ]] && echo ${1#*v} || echo ${1##*[[:alpha:]]-})
+version=${version#*v}
 binary=${binary[@]}
 binshort=${binary//env*/}
-#echo "$@"
-#echo binary=${binary[@]}
+
+[ -n "${ENV_DEBUG}" ] && echo binary=${binary[@]} binshort=${binary//env*/} version=${version#*v}
+[ -n "${ENV_DEBUG}" ] && echo ARGS= "$@"
+[ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 
 function error_and_die() {
   echo -e "${binary}: $(basename ${0}): \033[0;31m[ERROR] ${1}\033[0;39m" >&2

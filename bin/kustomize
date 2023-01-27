@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$ENV_DEBUG" ] && set -x
+
+ENV_CLI=kustomize
+exec "$(dirname `which $0`)/../bin/${ENV_CLI}nv" exec ${ENV_CLI} "$@"

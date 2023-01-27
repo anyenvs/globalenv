@@ -74,19 +74,19 @@ GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]:-${binary}}
 case $(test ${#_URLS[@]} -gt 1; echo $?) in
     1)  ## case single _URLS
         ## if file is tar.gz archive
-        [[ ${_URLS} =~ \.tar.gz|tarball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+        [[ ${_URLS} =~ \.tar.gz|tarball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
         ## if file is zip archive
-        [[ ${_URLS} =~ \.zip|zipball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${dst_path}/bin/\$(echo \${_URLS##*/}) ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+        [[ ${_URLS} =~ \.zip|zipball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${dst_path}/bin/\$(echo \${_URLS##*/}) ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
         ## if file is not archived
         [[ ${_URLS} =~ \.tar.gz|tarball|\.zip|zipball ]] || { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
     ;;
     0) ## case multiple _URLS
-        eval "for url in ${_URLS[@]} ;do wget -qO ${dst_path}/bin/\$(echo \${url##*/} | sed \"s/.$(_myOS).$(_myARCH)//\") \$url ;done" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ;
+        eval "for url in ${_URLS[@]} ;do wget -qO ${dst_path}/bin/\$(echo \${url##*/} | sed \"s/.$(_myOS).$(_myARCH)//\") \$url ;done" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ;
     ;;
     *) ## other scenario ;;
 esac
-test -n "${GLOBALENV_REPOS[${binary}_script]}" && ( eval "${GLOBALENV_REPOS[${binary}_script]}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed"; } )
-test -n "${GLOBALENV_REPOS[${binary}_postscript]}" && ( eval "${GLOBALENV_REPOS[${binary}_postscript]}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed"; } )
+test -n "${GLOBALENV_REPOS[${binary}_script]}" && ( eval "${GLOBALENV_REPOS[${binary}_script]}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed"; } )
+test -n "${GLOBALENV_REPOS[${binary}_postscript]}" && ( eval "${GLOBALENV_REPOS[${binary}_postscript]}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed"; } )
 chmod +x "${dst_path}/bin"/${GLOBALENV_REPOS[${binary}_bin]:-*} || error_and_die "Install failed";
 
 # Autocompletion
