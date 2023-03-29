@@ -25,7 +25,7 @@ GLOBALENV_BIN=${binary}
 
 ## globalenv install --list
 test "$1" == "--list" -o "$1" == "-l" && {
-  eval which {wget,curl,jq} &>/dev/null || { error_and_die "Please install wget curl jq" ; exit 0; }
+  eval which {wget,curl,jq,gsed,httping} &>/dev/null || { error_and_die "Please install wget curl jq gnu-sed httping" ; exit 0; }
   next="${GLOBALENV_REPO}?simple=yes&per_page=100&page="
   page=0
   while true; do
