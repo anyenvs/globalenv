@@ -5,8 +5,7 @@
 # Displays the directory where helm is installed.
 
 set -e
-[ -n "$ENV_DEBUG" ] && set -x
-source ${GLOBALENV_ROOT}/libexec/helpers.sh
+[ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 
 remove_from_path() {
   local path_to_remove="$1"

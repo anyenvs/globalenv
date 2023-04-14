@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Usage: helmfilenv version-file-read <file>
 set -e
-[ -n "$ENV_DEBUG" ] && set -x
-source ${GLOBALENV_ROOT}/libexec/helpers.sh
+[ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 
 VERSION_FILE="$1"
 

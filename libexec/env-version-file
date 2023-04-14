@@ -2,8 +2,7 @@
 # Usage: helmfilenv version-file [<dir>]
 # Summary: Detect the file that sets the current helmfilenv version
 set -e
-[ -n "$ENV_DEBUG" ] && set -x
-source ${GLOBALENV_ROOT}/libexec/helpers.sh
+[ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 
 target_dir="$1"
 

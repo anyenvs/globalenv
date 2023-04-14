@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Summary: Show the current version
 set -e
-[ -n "$ENV_DEBUG" ] && set -x
-source ${GLOBALENV_ROOT}/libexec/helpers.sh
+[ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 
 if [ -z "$GLOBALENV_VERSION" ]; then
   GLOBALENV_VERSION_FILE="$(binary=$binary env-version-file)"
@@ -26,6 +25,6 @@ if version_exists "$GLOBALENV_VERSION"; then
 elif version_exists "${GLOBALENV_VERSION#${binary}-}"; then
   echo "${GLOBALENV_VERSION#${binary}-}"
 else
-  echo "${binary}: version \`$GLOBALENV_VERSION' is not installed (set by $(binary=$binary env-version-origin))" >&2
+  echo "${binary}: version '$GLOBALENV_VERSION' is not installed (set by $(binary=$binary env-version-origin))" >&2
   exit 1
 fi

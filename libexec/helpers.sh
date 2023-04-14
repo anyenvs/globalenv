@@ -8,17 +8,15 @@ version=${version#*v}
 binary=${binary[@]}
 binshort=${binary//env*/}
 
+function _log() { echo -e "\033[0;32m[INFO] ${1}\033[0;39m"; }
+
 [ -n "${ENV_DEBUG}" ] && echo binary=${binary[@]} binshort=${binary//env*/} version=${version#*v}
-[ -n "${ENV_DEBUG}" ] && echo ARGS= "$@"
+[ -n "${ENV_DEBUG}" ] && _log "ARGS=$@"
 [ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 
 function error_and_die() {
   echo -e "${binary}: $(basename ${0}): \033[0;31m[ERROR] ${1}\033[0;39m" >&2
   exit 1
-}
-
-function info() {
-  echo -e "\033[0;32m[INFO] ${1}\033[0;39m"
 }
 
 function realpath() {
