@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+[ -n "${DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
+
+_cmd=terragrunt
+unset _verbose modules_only noplan plan_cmd state_cmd run_all include_dir
+
+pattern_arg='-pattern=[^ ]+'
+pattern_module='-mo|module-only|modules-only'
+args=()
+for arg do
+  shift
+  test -n "${_skip}" && unset _skip && continue
+  [[ "$arg" =~ $pattern_arg ]]    && pattern=${arg:9}  && continue
+  [[ "$arg" =~ $pattern_module ]] && modules_only=true && continue
+  [[ "$arg" =~ -plan|\+plan ]]    && plan_cmd=true     && continue
+  [[ "$arg" =~ -verbose|dry-run ]] && _verbose=true    && continue
+  [[ "$arg" =~ run-all ]]         && run_all=run-all   && continue
+  [[ "$arg" =~ state|import|taint|untaint ]] && state_cmd=true
+  [[ "$arg" =~ terragrunt-include-dir|terragrunt-exclude-dir ]] && include_dir+=( "$arg '$1'" ) && _skip=true && continue
+  args+=("$arg")
+done
+test -n "${_verbose}" && echo $?
+set -- "$@" "${args[@]}"
+test -n "${_verbose}" && echo ARGS = "$@"
+test -n "${_verbose}" && echo include_dir = "${include_dir[@]}"
+#exit 0
+
+if [ -z $pattern ]
+then
+  >&2 echo "===> No pattern provided, running: $_cmd $@"
+  echo $_cmd $@
+  exit
+fi
+
+>&2 echo "===> Matching pattern '$pattern' against state..."
+state=$( eval "TERRAGRUNT_SOURCE_UPDATE=false $_cmd ${run_all+$run_all --terragrunt-non-interactive} ${include_dir[@]} state list" )
+for i in $state
+do
+  if [[ $i =~ $pattern ]]
+  then
+    >&2 echo "Match '$i' found"
+    test -z "${state_cmd}" && set -- "$@" "-target='$i'"
+    test -n "${state_cmd}" && set -- "$@" "'$i'"
+  fi
+done
+
+>&2 echo "===> Matching pattern '$pattern' against plan... ${plan_cmd:-skipping...}"
+test -n "${plan_cmd}" && plan=$(eval "TERRAGRUNT_SOURCE_UPDATE=false $_cmd ${run_all+$run_all --terragrunt-non-interactive} ${include_dir[@]} plan -lock=false -no-color " | egrep '^  # ' | egrep -o '[^ ]+\.[^ ]+')
+for i in $plan
+do
+  if [[ $i =~ $pattern ]]
+  then
+    >&2 echo "Match '$i' found"
+    test -z "${state_cmd}" && set -- "$@" "-target='$i'"
+    test -n "${state_cmd}" && set -- "$@" "'$i'"
+  fi
+done
+
+## uniq targets
+test -n "${modules_only}" && modules_only=$( echo "$@" | tr ' ' '\n' | sed -nE "s/([^.]*\.[^.]*)\..*(')/\1\2/pg; s/([^.]*\.[^.]*)\[.*(')/\1\2/pg ; p" | grep -v '"' )
+#targets=$( echo $@ | tr ' ' '\n' | sort -ru | tr '\n' ' ')
+## xargs removes single qutes around resources
+#targets=$( sort -ru < <( echo -e ${@// /\\n} ) | xargs )
+targets=( $( echo "${modules_only:-$@}" | tr ' ' '\n' | sort -ru | tr '\n' ' ' ) )
+command=( $( echo "${modules_only:-$@}" | tr ' ' '\n' | sort -ru | grep -v target | tr '\n' ' ' ) )
+test -n "${_verbose}" && echo COMMANDS = \[ ${command[@]} \] = ${#command[@]}
+
+>&2 echo -e "===> Pattern matching complete, running: \n\n"$_cmd ${run_all} ${include_dir[@]} ${targets[@]}"\n## -----------------------"
+
+#test -z "${_verbose}" && exec "$(dirname `which $0`)/../bin/tgenv" exec terragrunt "${targets[*]}"
+test -z "${_verbose}" -a "${#command[@]}" != "0" && eval "terragrunt ${run_all} ${include_dir[@]} ${targets[@]}"
