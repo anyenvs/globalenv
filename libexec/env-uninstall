@@ -24,11 +24,11 @@ fi
 
 dst_path=( $(ls -d ${GLOBALENV_ROOT}/versions/*${version##v} 2>/dev/null) )
 if [ -d "${dst_path}/bin" ]; then
-  info "Uninstall ${binary//env/} ${version##v}"
+  _info "Uninstall ${binary//env/} ${version##v}"
   VERSION_TMPFILE=$(mktemp ${GLOBALENV_ROOT}/version.$(date +%Y-%m-%d-%H-%M).XXXXXX)
   test -n "${version_file}" && grep -v ${version##v} ${version_file} > ${VERSION_TMPFILE} && cat ${VERSION_TMPFILE} > ${version_file}
   test -z "${version_file}" && grep -v ${version##v} ${GLOBALENV_ROOT}/version > ${VERSION_TMPFILE} && cat ${VERSION_TMPFILE} > ${GLOBALENV_ROOT}/version
   test -f "${VERSION_TMPFILE}" -o -d "${version_file:+$VERSION_TMPFILE}" && rm -f `ls -t ${GLOBALENV_ROOT}/version.* | awk 'NR>2'`
   test -d "${dst_path}" && rm -r ${dst_path[@]}
-  info "\033[0;32m${binary//env/} ${version##v} is successfully uninstalled\033[0;39m"
+  _info "\033[0;32m${binary//env/} ${version##v} is successfully uninstalled\033[0;39m"
 fi

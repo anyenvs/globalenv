@@ -44,7 +44,7 @@ if [ -f "${dst_path}/bin/${GLOBALENV_REPOS[${binary}_bin]:-*}" ]; then
   exit 0
 fi
 
-info "Installing ${GLOBALENV_REPOS[${binary}_bin]:-${binary}} ${version##v}"
+_info "Installing ${GLOBALENV_REPOS[${binary}_bin]:-${binary}} ${version##v}"
 mkdir -p ${dst_path}/bin || error_and_die "Failed to make directory ${dst_path}"
 
 #URL=${GLOBALENV_REPOS[${binary}_download]}
@@ -96,4 +96,4 @@ test -n "${GLOBALENV_REPOS[${binary}_completion]}" && wget -qO ${GLOBALENV_ROOT}
 test -f ${GLOBALENV_ROOT}/completions/${GLOBALENV_BIN}-completion.${SHELL##*/} && . ${GLOBALENV_ROOT}/completions/*.${SHELL##*/} &>/dev/null
 test -f ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} && . ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} &>/dev/null
 
-info "Installation of ${GLOBALENV_BIN} ${version##v} successful"
+_info "Installation of ${GLOBALENV_BIN} ${version##v} successful"

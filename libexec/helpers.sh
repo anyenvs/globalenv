@@ -8,7 +8,8 @@ version=${version#*v}
 binary=${binary[@]}
 binshort=${binary//env*/}
 
-function _log() { echo -e "\033[0;32m[INFO] ${1}\033[0;39m"; }
+function _log()  { echo -e "\033[0;32m[INFO] ${1}\033[0;39m"; }
+function _info() { _log "$@"; }
 
 [ -n "${ENV_DEBUG}" ] && echo binary=${binary[@]} binshort=${binary//env*/} version=${version#*v}
 [ -n "${ENV_DEBUG}" ] && _log "ARGS=$@"
