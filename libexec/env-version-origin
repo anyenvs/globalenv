@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Summary: Explain how the current helm version is set
+# Summary: Explain how the current env version is set
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
 source ${GLOBALENV_ROOT}/libexec/helpers.sh

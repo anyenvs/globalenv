@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 #
-# Summary: Set or show the global helm version
+# Summary: Set or show the global env version
 #
-# Usage: helmfilenv global <version>
+# Usage: env global <version>
 #
-# Sets the global helm version. You can override the global version at
-# any time by setting a directory-specific version with `helmfilenv local'
+# Sets the global env version. You can override the global version at
+# any time by setting a directory-specific version with `env local'
 # or by setting the `GLOBALENV_VERSION' environment variable.
 #
-# <version> should be a string matching a helm version known to helmfilenv.
-# The special version string `system' will use your default system helm.
-# Run `helmfilenv versions' for a list of available helm versions.
+# <version> should be a string matching a env version known to env.
+# The special version string `system' will use your default system env.
+# Run `env versions' for a list of available env versions.
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x

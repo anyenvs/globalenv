@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Summary: List all available helmfilenv commands
+# Summary: List all available env commands
 # Usage: globalenv commands [--sh|--no-sh]
 
 set -e

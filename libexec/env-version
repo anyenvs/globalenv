@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Summary: Show the current helm version and its origin
+# Summary: Show the current env version and its origin
 #
-# Shows the currently selected helm version and how it was selected.
-# To obtain only the version string, use `helmfilenv version-name'.
+# Shows the currently selected env version and how it was selected.
+# To obtain only the version string, use `env version-name'.
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x

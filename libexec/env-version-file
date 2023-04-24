@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Usage: helmfilenv version-file [<dir>]
-# Summary: Detect the file that sets the current helmfilenv version
+# Usage: env version-file [<dir>]
+# Summary: Detect the file that sets the current env version
 set -e
 [ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 

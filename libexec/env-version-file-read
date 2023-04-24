@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: helmfilenv version-file-read <file>
+# Usage: env version-file-read <file>
 set -e
 [ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 

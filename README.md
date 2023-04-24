@@ -27,12 +27,12 @@ Most of the codes are taken from below tools:
 Usage: globalenv <command> [<args>]
 
 Some useful globalenv commands are:
-    local       Set or show the local application-specific Helm version
-    global      Set or show the global Helm version
-    install     Install the specified version of Helm
-    uninstall   Uninstall the specified version of Helm
-    version     Show the current Helm version and its origin
-    versions    List all Helm versions available to globalenv
+    local       Set or show the local application-specific Env version
+    global      Set or show the global Env version
+    install     Install the specified version of Env
+    uninstall   Uninstall the specified version of Env
+    version     Show the current Env version and its origin
+    versions    List all Env versions available to globalenv
 
 See `globalenv help <command>' for information on a specific command.
 For full documentation, see: https://github.com/anyenvs/globalenv#readme

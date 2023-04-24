@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Summary: Display the version of helmfilenv
+# Summary: Display the version of env
 #
-# Displays the version number of this helmfilenv release, including the
+# Displays the version number of this env release, including the
 # current revision from git, if available.
 #
 # The format of the git revision is:

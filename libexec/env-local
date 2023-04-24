@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 #
-# Summary: Set or show the local application-specific helm version
+# Summary: Set or show the local application-specific env version
 #
-# Usage: helmfilenv local <version>
-#        helmfilenv local --unset
+# Usage: env local <version>
+#        env local --unset
 #
-# Sets the local application-specific helm version by writing the
-# version name to a file named `.helm-version'.
+# Sets the local application-specific env version by writing the
+# version name to a file named `.env-version'.
 #
-# When you run a helm command, helmfilenv will look for a `.helm-version'
+# When you run a env command, env will look for a `.env-version'
 # file in the current directory and each parent directory. If no such
-# file is found in the tree, helmfilenv will use the global helm version
-# specified with `helmfilenv global'. A version specified with the
+# file is found in the tree, env will use the global env version
+# specified with `env global'. A version specified with the
 # `GLOBALENV_VERSION' environment variable takes precedence over local
 # and global versions.
 #
-# <version> should be a string matching a helm version known to helmfilenv.
-# The special version string `system' will use your default system helm.
-# Run `helmfilenv versions' for a list of available helm versions.
+# <version> should be a string matching a env version known to env.
+# The special version string `system' will use your default system env.
+# Run `env versions' for a list of available env versions.
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x

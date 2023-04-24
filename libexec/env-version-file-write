@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: helmfilenv version-file-write <file> <version>
+# Usage: env version-file-write <file> <version>
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x

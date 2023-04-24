@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Summary: List all helm versions available to helmfilenv
-# Usage: helmfilenv versions [--bare] [--skip-aliases]
+# Summary: List all env versions available to env
+# Usage: env versions [--bare] [--skip-aliases]
 #
-# Lists all helm versions found in `$GLOBALENV_ROOT/versions/*'.
+# Lists all env versions found in `$GLOBALENV_ROOT/versions/*'.
 
 set -e
 [ -n "$ENV_DEBUG" ] && set -x

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Summary: Display the directory where helm exists
+# Summary: Display the directory where env exists
 # Usage: globalenv bin-path
 #
-# Displays the directory where helm is installed.
+# Displays the directory where env is installed.
 
 set -e
 [ -n "${ENV_DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
