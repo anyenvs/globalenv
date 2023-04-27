@@ -42,3 +42,4 @@ _myOSCap() { echo -n $(uname -s | sed 's/mingw64_nt.*/Windows/' ); }
 _isOSX()   { case $(_myOS) in darwin) echo osx ;; *) _myOS ;; esac; }
 _isMac()   { case $(_myOS) in darwin) echo mac;; *) echo $(_myOS);; esac; }
 _isMacOS() { case $(_myOS) in darwin) echo macOS;; *) echo $(_myOS);; esac; }
+_isApple() { case $(_myOS) in darwin) echo apple;; *) echo $(_myOS);; esac; }
