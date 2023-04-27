@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Summary: List all env versions available to env
+# Usage: env versions [--bare] [--skip-aliases]
+#
+# Lists all env versions found in `$GLOBALENV_ROOT/versions/*'.
+
+set -e
+[ -n "$ENV_DEBUG" ] && set -x
+source ${GLOBALENV_ROOT}/libexec/helpers.sh
+
+unset bare
+unset skip_aliases
+test -z "${1}" && set -- "$@" "--list"
+# Provide env completions
+for arg; do
+  case "$arg" in
+  --complete )
+    echo --bare
+    echo --skip-aliases
+    exit ;;
+  --bare ) bare=1 ;;
+  --skip-aliases ) skip_aliases=1 ;;
+  * )
+    binary=${binary} env-install --list >&2
+    exit 1
+    ;;
+  esac
+done
