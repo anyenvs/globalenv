@@ -26,7 +26,7 @@ _helmfile_bash_autocomplete() {
   fi
 }
 #complete -o bashdefault -o default -o nospace -F _helmfile_bash_autocomplete helmfile
-eval which helmfile && version_greater_equal "${HELMFILE_VERSION}" 0.145.0 || complete -o bashdefault -o default -o nospace -F _helmfile_bash_autocomplete helmfile
+eval which helmfile &>/dev/null && version_greater_equal "${HELMFILE_VERSION}" 0.145.0 || complete -o bashdefault -o default -o nospace -F _helmfile_bash_autocomplete helmfile
 
 ## helmfile completion >= 0.145.0
 eval which helmfile && version_greater_equal "${HELMFILE_VERSION}" 0.145.0 && . <( helmfile completion ${SHELL##*/} )

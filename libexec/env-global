@@ -30,3 +30,15 @@ if [ -n "${GLOBALENV_VERSION##v}" ]; then
 else
   binary=${binary} env-version-file-read "$GLOBALENV_VERSION_FILE" || echo system
 fi
+
+BIN_PATH=$(binary=${binary} env-bin-path)
+if [ -z "${BIN_PATH}" ]; then
+  exit 1
+fi
+args=()
+for arg do
+  shift
+  test -n "${_skip}"   && unset _skip && continue
+  [[ "$arg" =~ link ]] && ln -svnf $(realpath $BIN_PATH/$binshort*) /usr/local/bin/ && continue
+  [[ "$arg" =~ copy ]] && cp -fv $(realpath $BIN_PATH/$binshort*) /usr/local/bin/fish && continue
+done
