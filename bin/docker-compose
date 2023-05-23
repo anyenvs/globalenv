@@ -2,4 +2,4 @@
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
 
-exec "$(dirname `which $0`)/../bin/dcenv" exec docker-compose "$@"
+exec time "$(dirname `which $0`)/../bin/dcenv" exec docker-compose "$@"

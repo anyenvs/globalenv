@@ -2,4 +2,9 @@
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
 
-exec "$(dirname `which $0`)/../bin/tgenv" exec terragrunt "$@" --terragrunt-log-level debug --terragrunt-debug
+exec time "$(dirname `which $0`)/../bin/tgenv" exec terragrunt "$@" --terragrunt-log-level debug --terragrunt-debug
+
+echo =======================================================
+echo $( TZ='America/New_York' date ) EST
+echo $( TZ='America/Los_Angeles' date ) PST
+echo $( TZ='UTC' date )

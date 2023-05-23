@@ -2,4 +2,9 @@
 set -e
 [ -n "$ENV_DEBUG" ] && set -x
 
-exec "$(dirname `which $0`)/../bin/helmfilenv" exec helmfile "$@"
+exec time "$(dirname `which $0`)/../bin/helmfilenv" exec helmfile "$@"
+
+echo =======================================================
+echo $( TZ='America/New_York' date ) EST
+echo $( TZ='America/Los_Angeles' date ) PST
+echo $( TZ='UTC' date )
