@@ -40,3 +40,5 @@ versionlte() {
 versionlt() {
     [ "$1" = "$2" ] && return 1 || versionlte $1 $2
 }
+
+set +x
