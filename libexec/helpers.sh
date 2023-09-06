@@ -37,6 +37,8 @@ function realpath() {
 _RELEASE() { . /etc/os-release ; case $ID in debian) echo "${ID^}_${VERSION_ID}" ;; ubuntu) echo "x${ID^}_${VERSION_ID}" ;; esac; set +x; }
 _myOS()    { echo -n $(uname -s | tr '[:upper:]' '[:lower:]:'|sed 's/mingw64_nt.*/windows/' ); }
 _myARCH()  { echo -n $(uname -m | sed 's/x86_64/amd64/g; s/armv7.*/armv7/g'); }
+_myAARCH64()  { echo -n $(uname -m | sed 's/x86_64/amd64/g; s/armv7.*/armv7/g; s/arm64/aarch64/g'; ); }
+_myARM64()  { echo -n $(uname -m | sed 's/x86_64/amd64/g; s/armv7.*/armv7/g; s/aarch64/arm64/g'; ); }
 _myMARCH() { echo -n $(uname -m); }
 _myOSCap() { echo -n $(uname -s | sed 's/mingw64_nt.*/Windows/' ); }
 _isOSX()   { case $(_myOS) in darwin) echo osx ;; *) _myOS ;; esac; }

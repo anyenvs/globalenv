@@ -7,7 +7,7 @@ PATH=$(echo -n "$HOME/bin:$HOME/.local/bin:${ANYENV_PATHS}:$PATH" | awk -v RS=: 
 ## Terragrunt Completions
 TG_COMMANDS_ALL="$( terragrunt --help )"
 TG_COMMANDS=$( terragrunt | sed -n '/COMMANDS/,/^$/p' | grep -vE '\*|COMMANDS' | awk '{ print $1 }' )
-TG_OPTIONS=$( terragrunt | sed -n '/GLOBAL OPTIONS/,/^$/p' | grep -vE 'GLOBAL OPTIONS' | awk '{ print $1 }' | xargs -n1 -I{} echo --{} )
+TG_OPTIONS=$( terragrunt | sed -n '/GLOBAL OPTIONS/,/^$/p' | grep -vE 'GLOBAL OPTIONS' | awk '{ print $1 }' | xargs -n1 -I{} echo {} )
 
 ## Terraform Completions
 TF_COMMANDS_ALL="$( terraform --help )"
