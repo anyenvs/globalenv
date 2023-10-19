@@ -1,5 +1,6 @@
-## Argo Cli completion
-eval which argo && . <( argo completion ${SHELL##*/} ) || true
-grep -q 'argo completion' $HOME/.bash_completion || echo 'eval which argo && . <( argo completion ${SHELL##*/} )' >> $HOME/.bash_completion
+## OC Cli completion
+eval which oc && . <( oc completion ${SHELL##*/} ) || true
+eval which ocm && . <( ocm completion ${SHELL##*/} ) || true
+grep -q 'oc completion' $HOME/.bash_completion || echo 'eval which oc && . <( oc completion ${SHELL##*/} )' >> $HOME/.bash_completion
 
 true
