@@ -75,11 +75,11 @@ GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]:-${binary}}
 case $(test ${#_URLS[@]} -gt 1; echo $?) in
     1)  ## case single _URLS
         ## if file is tar.gz archive
-        [[ ${_URLS} =~ \.tar.gz|\.gz|\.tar.xz|tarball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+        [[ ${_URLS} =~ \.tar.gz|\.tgz|\.gz|\.tar.xz|tarball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
         ## if file is zip archive
         [[ ${_URLS} =~ \.zip|zipball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${dst_path}/bin/\$(echo \${_URLS##*/}) ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
         ## if file is not archived
-        [[ ${_URLS} =~ \.tar.gz|\.gz|\.tar.xz|tarball|\.zip|zipball ]] || { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+        [[ ${_URLS} =~ \.tar.gz|\.tgz|\.gz|\.tar.xz|tarball|\.zip|zipball ]] || { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
     ;;
     0) ## case multiple _URLS
         echo multiple _URLS

@@ -21,6 +21,7 @@ TF_COMMANDS_STATE=$( terraform state -help | sed -n '/Subcommands/,/^$/p' | grep
 TF_OPTIONS_2="-target -replace -chdir="
 
 
+test -z "$( which tofu )" || complete -W "$( echo $TF_MAIN_COMMANDS $TF_OTHER_COMMANDS $TF_GLOBAL_OPTIONS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2 | xargs)" tofu
 test -z "$( which terragrunt )" || complete -W "$( echo $TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_OTHER_COMMANDS $TF_GLOBAL_OPTIONS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2 | xargs)" terragrunt tg tg-debug tg-run-all-debug
 test -z "$( which terragrunt )" || complete -W "$( echo $TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_OTHER_COMMANDS $TF_GLOBAL_OPTIONS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2 -pattern= -modules-only -plan +plan -verbose dry-run | xargs)" tgp
 test -z "$( which terraform )"  || { complete -C $(which terraform) terraform t ; echo complete -W "$TF_OPTIONS_2" terraform t ; }

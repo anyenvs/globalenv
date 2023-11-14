@@ -39,11 +39,12 @@ function __fish_terragrunt_using_command
 end
 
 test -z ( which terragrunt ) || complete -f -c terragrunt -n '__fish_terragrunt_needs_command' -a "$TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_OTHER_COMMANDS $TF_GLOBAL_OPTIONS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2"
+test -z ( which tofu ) || complete -f -c terragrunt -n '__fish_terragrunt_needs_command' -a "$TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_OTHER_COMMANDS $TF_GLOBAL_OPTIONS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2"
 ## tg aliases
 complete -c tg -w terragrunt
 complete -c tg-debug -w terragrunt
 complete -c tg-run-all-debug -w terragrunt
-for cmd in (echo $TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_GLOBAL_OPTIONS $TF_OTHER_COMMANDS$TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2 | xargs)
+for cmd in (echo $TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_GLOBAL_OPTIONS $TF_OTHER_COMMANDS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2 | xargs)
   complete -f -c terragrunt -n "__fish_terragrunt_using_command $cmd" -a "$TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_GLOBAL_OPTIONS $TF_OTHER_COMMANDS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2"
   complete -f -c tg -n "__fish_terragrunt_using_command $cmd" -a "$TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_GLOBAL_OPTIONS $TF_OTHER_COMMANDS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2"
   complete -f -c tg-debug -n "__fish_terragrunt_using_command $cmd" -a "$TG_COMMANDS $TG_OPTIONS $TF_MAIN_COMMANDS $TF_GLOBAL_OPTIONS $TF_OTHER_COMMANDS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2"
@@ -53,6 +54,10 @@ end
 complete -c tgp -w terragrunt -a "-pattern= -modules-only -plan +plan -verbose dry-run $TF_OPTIONS_2"
 for cmd in (echo $TG_COMMANDS $TG_OPTIONS $TF_COMMANDS $TF_OTHER_COMMANDS $TF_GLOBAL_OPTIONS | xargs)
   complete -f -c tgp -n "__fish_terragrunt_using_command $cmd" -a "$TG_OPTIONS $TF_COMMANDS $TF_OTHER_COMMANDS $TF_GLOBAL_OPTIONS -pattern= -modules-only -plan +plan -verbose dry-run"
+end
+## tofu alias
+for cmd in (echo $TF_MAIN_COMMANDS $TF_GLOBAL_OPTIONS $TF_OTHER_COMMANDS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2 | xargs)
+  complete -f -c tofu -n "__fish_terragrunt_using_command $cmd" -a "$TF_MAIN_COMMANDS $TF_GLOBAL_OPTIONS $TF_OTHER_COMMANDS $TF_COMMANDS_APPLY $TF_COMMANDS_INIT $TF_COMMANDS_TAINT $TF_COMMANDS_STATE $TF_OPTIONS_2"
 end
 
 function __fish_terraform_needs_command
