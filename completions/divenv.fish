@@ -1,12 +1,12 @@
-function __fish_valsenv_needs_command
+function __fish_divenv_needs_command
   set cmd (commandline -opc)
-  if [ (count $cmd) -eq 1 -a $cmd[1] = 'valsenv' ]
+  if [ (count $cmd) -eq 1 -a $cmd[1] = 'divenv' ]
     return 0
   end
   return 1
 end
 
-function __fish_valsenv_using_command
+function __fish_divenv_using_command
   set cmd (commandline -opc)
   if [ (count $cmd) -gt 1 ]
     if [ $argv[1] = $cmd[2] ]
@@ -16,8 +16,8 @@ function __fish_valsenv_using_command
   return 1
 end
 
-complete -f -c valsenv -n '__fish_valsenv_needs_command' -a '(valsenv commands)'
-for cmd in (valsenv commands)
-  complete -f -c valsenv -n "__fish_valsenv_using_command $cmd" -a \
-    "(valsenv completions (commandline -opc)[2..-1])"
+complete -f -c divenv -n '__fish_divenv_needs_command' -a '(divenv commands)'
+for cmd in (divenv commands)
+  complete -f -c divenv -n "__fish_divenv_using_command $cmd" -a \
+    "(divenv completions (commandline -opc)[2..-1])"
 end

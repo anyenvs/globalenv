@@ -2,16 +2,16 @@ if [[ ! -o interactive ]]; then
     return
 fi
 
-compctl -K _divenv divenv
+compctl -K _easyrsaenv easyrsaenv
 
-_divenv() {
+_easyrsaenv() {
   local words completions
   read -cA words
 
   if [ "${#words}" -eq 2 ]; then
-    completions="$(divenv commands)"
+    completions="$(easyrsaenv commands)"
   else
-    completions="$(divenv completions ${words[2,-2]})"
+    completions="$(easyrsaenv completions ${words[2,-2]})"
   fi
 
   reply=(${(ps:\n:)completions})
