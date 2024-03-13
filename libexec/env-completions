@@ -9,7 +9,7 @@ env-complete() {
     ## AutoCompletions
     test -f "${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/}" && . ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} &>/dev/null
     ENV_COMPLETIONS=( $(echo ${GLOBALENV_ROOT}/completions/${binary}.${SHELL##*/} ${GLOBALENV_ROOT}/completions/${binary//env/*}.${SHELL##*/} | tr ' ' '\n' | sort -u | tr '\n' ' ') )
-    test -n "${ENV_COMPLETIONS}" && ( echo . ${ENV_COMPLETIONS[@]} ; . ${ENV_COMPLETIONS[@]} >/dev/null )
+    test -n "${ENV_COMPLETIONS}" && ( printf "; . %s" ${ENV_COMPLETIONS[@]} ; . <(cat ${ENV_COMPLETIONS[@]}) >/dev/null )
 }
 
 COMMAND="$1"
