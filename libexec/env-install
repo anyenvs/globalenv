@@ -48,7 +48,6 @@ fi
 _info "Installing ${GLOBALENV_REPOS[${binary}_bin]:-${binary}} ${version##v}"
 mkdir -p ${dst_path}/bin || error_and_die "Failed to make directory ${dst_path}"
 
-#URL=${GLOBALENV_REPOS[${binary}_download]}
 test "$1" != "--list" -a "$1" != "-l" && {
   next="${GLOBALENV_REPO}?simple=yes&per_page=100&page="
   page=0
@@ -71,13 +70,14 @@ test "$1" != "--list" -a "$1" != "-l" && {
 }
 
 GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]:-${binary}}
+test -n "${GLOBALENV_REPOS[${binary}_download]}" && _URLS=${GLOBALENV_REPOS[${binary}_download]}
 #test -n "${GLOBALENV_REPOS[${binary}_download]}" -a "${#_URLS[@]}" == "1" && { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
 case $(test ${#_URLS[@]} -gt 1; echo $?) in
     1)  ## case single _URLS
         ## if file is tar.gz archive
         [[ ${_URLS} =~ \.tar.gz|\.tgz|\.gz|\.tar.xz|tarball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
         ## if file is zip archive
-        [[ ${_URLS} =~ \.zip|zipball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${dst_path}/bin/\$(echo \${_URLS##*/}) ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
+        [[ ${_URLS} =~ \.zip|zipball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${dst_path}/bin/\$(echo \${_URLS##*/}) ${_URLS}" >&2 || test -f ${dst_path}/bin/*.zip || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
         ## if file is not archived
         [[ ${_URLS} =~ \.tar.gz|\.tgz|\.gz|\.tar.xz|tarball|\.zip|zipball ]] || { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
     ;;
