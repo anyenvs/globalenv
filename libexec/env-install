@@ -20,8 +20,16 @@ else
 fi
 
 test -f "${GLOBALENV_ROOT}/globalrepos.env" && . ${GLOBALENV_ROOT}/globalrepos.env || (error_and_die "Missing ${GLOBALENV_ROOT}/globalrepos.env"; exit 1)
-GLOBALENV_REPO="https://api.github.com/repos/${GLOBALENV_REPOS[${binary}]}"
+GLOBALENV_REPOS[$binary]="${GLOBALENV_REPOS[$binary]//,/ }"
+#echo "${GLOBALENV_REPOS[$binary]}"
+test "${#GLOBALENV_REPOS[$binary]}" == "1"
+declare GLOBALENV_REPO
+for i in ${GLOBALENV_REPOS[$binary]} ;do GLOBALENV_REPO+=("https://api.github.com/repos/$i") ;done
+#GLOBALENV_REPO="https://api.github.com/repos/${GLOBALENV_REPOS[${binary}]}"
 GLOBALENV_BIN=${binary}
+
+echo GLOBALENV_REPOS=${GLOBALENV_REPOS[$binary]}
+echo GLOBALENV_REPO=${GLOBALENV_REPO[@]}
 
 ## globalenv install --list
 test "$1" == "--list" -o "$1" == "-l" && {

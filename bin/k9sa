@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+[ -n "$ENV_DEBUG" ] && set -x
+
+ENV_CLI=k9s
+exec "$(dirname `which $0`)/../bin/${ENV_CLI}env" exec k9salpha "$@"
