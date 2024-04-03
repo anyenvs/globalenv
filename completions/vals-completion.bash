@@ -2,7 +2,7 @@ ANYENV_ROOT=$HOME/.anyenv
 TFENV_ROOT=$HOME/.tfenv
 GLOBALENV_ROOT=$HOME/.globalenv
 ANYENV_PATHS="${ANYENV_ROOT}/bin:${GLOBALENV_ROOT}/bin:${GLOBALENV_ROOT}/shims"
-PATH=$(echo -n "$HOME/bin:$HOME/.local/bin:${ANYENV_PATHS}:$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
+#PATH=$(echo -n "$HOME/bin:$HOME/.local/bin:${ANYENV_PATHS}:$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
 ## VALS Completions
 #VALS_COMMANDS_ALL="$( vals --help )"

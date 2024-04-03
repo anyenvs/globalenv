@@ -2,7 +2,7 @@ set ANYENV_ROOT $HOME/.anyenv
 set TFENV_ROOT $HOME/.tfenv
 set GLOBALENV_ROOT $HOME/.globalenv
 set ANYENV_PATHS "$ANYENV_ROOT/bin" "$GLOBALENV_ROOT/bin" "$GLOBALENV_ROOT/shims" "$TFENV_ROOT/bin" "$TFENV_ROOT/shims"
-set PATH $(echo -n "$HOME/bin:$HOME/.local/bin:$ANYENV_PATHS:$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
+#set PATH $(echo -n "$HOME/bin:$HOME/.local/bin:$ANYENV_PATHS:$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
 ## Terragrunt Completions
 set TG_COMMANDS_ALL ( terragrunt --help | string split0)

@@ -1,7 +1,7 @@
 ANYENV_ROOT=$HOME/.anyenv
 GLOBALENV_ROOT=$HOME/.globalenv
 ANYENV_PATHS="${ANYENV_ROOT}/bin:${GLOBALENV_ROOT}/bin:${GLOBALENV_ROOT}/shims"
-PATH=$(echo -n "$HOME/bin:$HOME/.local/bin:${ANYENV_PATHS}:$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
+#PATH=$(echo -n "$HOME/bin:$HOME/.local/bin:${ANYENV_PATHS}:$PATH" | awk -v RS=: -v ORS=: '!x[$0]++' | sed "s/\(.*\).\{1\}/\1/")
 
 HELMFILE_VERSION=$(helmfile -v); HELMFILE_VERSION=${HELMFILE_VERSION##* };
 
