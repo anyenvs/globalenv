@@ -68,9 +68,9 @@ test "$1" != "--list" -a "$1" != "-l" && {
     test -n "$versions" || break
     ## Check version with GLOBALENV_REPOS[${binary}_match]
     test -n "${GLOBALENV_REPOS[${binary}_match]}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | match("'${GLOBALENV_REPOS[${binary}_match]}'") ).browser_download_url else select(.tarball_url | contains("'${GLOBALENV_REPOS[${binary}_match]}'")).tarball_url end' <<<${RELEASES} |uniq) )
-    test -z "${_URLS}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'","'$(_isMac)'","'$(_isMacOS)'","'$(_isOSX)'") and contains("'$(_myARCH)'","'$(_myARM64)'","'$(_myAARCH64)'","'$(_myMARCH)'") ).browser_download_url else select(.tarball_url | contains("'${version##v}'")).tarball_url end' <<<${RELEASES} |uniq) )
+    test -z "${_URLS}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'","'$(_myOSCap)'","'$(_isMac)'","'$(_isMacOS)'","'$(_isOSX)'") and contains("'$(_myARCH)'","'$(_myARM64)'","'$(_myAARCH64)'","'$(_myMARCH)'") ).browser_download_url else select(.tarball_url | contains("'${version##v}'")).tarball_url end' <<<${RELEASES} |uniq) )
     ## Check version without GLOBALENV_REPOS[${binary}_match]
-    test -z "${_URLS}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'","'$(_isMac)'","'$(_isMacOS)'","'$(_isOSX)'") ).browser_download_url else select(.tarball_url | contains("'${version##v}'")).tarball_url end' <<<${RELEASES} |uniq) )
+    test -z "${_URLS}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'","'$(_myOSCap)'","'$(_isMac)'","'$(_isMacOS)'","'$(_isOSX)'") ).browser_download_url else select(.tarball_url | contains("'${version##v}'")).tarball_url end' <<<${RELEASES} |uniq) )
     test -n "${_URLS}" && break
   done
   echo "${_URLS[@]}" ;
