@@ -35,7 +35,7 @@ then
 fi
 
 >&2 echo "===> Matching pattern '$pattern' against state..."
-state=$( eval "TERRAGRUNT_SOURCE_UPDATE=false $_cmd ${run_all+$run_all --terragrunt-non-interactive} ${include_dir[@]} state list" )
+state=$( eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive --terragrunt-no-color} ${include_dir[@]} state list" )
 for i in $state
 do
   if [[ $i =~ $pattern ]]
@@ -48,7 +48,7 @@ do
 done
 
 >&2 echo "===> Matching pattern '$pattern' against plan... ${plan_cmd:-skipping...}"
-test -n "${plan_cmd}" && plan=$(eval "TERRAGRUNT_SOURCE_UPDATE=false $_cmd ${run_all+$run_all --terragrunt-non-interactive} ${include_dir[@]} plan -lock=false -no-color " | egrep '^  # ' | egrep -o '[^ ]+\.[^ ]+')
+test -n "${plan_cmd}" && plan=$(eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive --terragrunt-no-color} ${include_dir[@]} plan -lock=false -no-color " | egrep '^  # ' | egrep -o '[^ ]+\.[^ ]+')
 for i in $plan
 do
   if [[ $i =~ $pattern ]]
@@ -65,8 +65,8 @@ test -n "${modules_only}" && modules_only=$( echo "$@" | tr ' ' '\n' | sed -nE "
 #targets=$( echo $@ | tr ' ' '\n' | sort -ru | tr '\n' ' ')
 ## xargs removes single qutes around resources
 #targets=$( sort -ru < <( echo -e ${@// /\\n} ) | xargs )
-targets=( $( echo "${modules_only:-$@}" | tr ' ' '\n' | sort -ru | tr '\n' ' ' ) )
-command=( $( echo "${modules_only:-$@}" | tr ' ' '\n' | sort -ru | grep -v target | tr '\n' ' ' ) )
+targets=( $( echo "${modules_only:-$@}" | tr ' ' '\n' | sort -ru | tr '\n' ' ' | tr -dc '[:print:]' ) )
+command=( $( echo "${modules_only:-$@}" | tr ' ' '\n' | sort -ru | grep -v target | tr '\n' ' ' | tr -dc '[:print:]' ) )
 test -n "${_verbose}" && echo COMMANDS = \[ ${command[@]} \] = ${#command[@]}
 
 >&2 echo -e "===> Pattern matching complete, running: \n\n"$_cmd ${run_all} ${include_dir[@]} ${targets[@]}"\n## -----------------------"
