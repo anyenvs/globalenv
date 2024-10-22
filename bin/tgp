@@ -35,7 +35,7 @@ then
 fi
 
 >&2 echo "===> Matching pattern '$pattern' against state..."
-state=$( eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive --terragrunt-no-color} ${include_dir[@]} state list" )
+state=$( eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive} ${include_dir[@]} --terragrunt-no-color --terragrunt-forward-tf-stdout state list" )
 for i in $state
 do
   if [[ $i =~ $pattern ]]
@@ -48,7 +48,7 @@ do
 done
 
 >&2 echo "===> Matching pattern '$pattern' against plan... ${plan_cmd:-skipping...}"
-test -n "${plan_cmd}" && plan=$(eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive --terragrunt-no-color} ${include_dir[@]} plan -lock=false -no-color " | egrep '^  # ' | egrep -o '[^ ]+\.[^ ]+')
+test -n "${plan_cmd}" && plan=$(eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive} --terragrunt-no-color --terragrunt-forward-tf-stdout ${include_dir[@]} plan -lock=false -no-color " | egrep '^  # ' | egrep -o '[^ ]+\.[^ ]+')
 for i in $plan
 do
   if [[ $i =~ $pattern ]]
@@ -71,10 +71,15 @@ test -n "${_verbose}" && echo COMMANDS = \[ ${command[@]} \] = ${#command[@]}
 
 >&2 echo -e "===> Pattern matching complete, running: \n\n"$_cmd ${run_all} ${include_dir[@]} ${targets[@]}"\n## -----------------------"
 
-#test -z "${_verbose}" && exec "$(dirname `which $0`)/../bin/tgenv" exec time terragrunt "${targets[*]}"
+##test -z "${_verbose}" && exec "$(dirname `which $0`)/../bin/tgenv" exec time terragrunt "${targets[*]}"
 test -z "${_verbose}" -a "${#command[@]}" != "0" && eval "time terragrunt ${run_all} ${include_dir[@]} ${targets[@]}"
 
+result=$?;
+
+## removed because not returning correct exit code
 echo =======================================================
 echo $( TZ='America/New_York' date ) EST
 echo $( TZ='America/Los_Angeles' date ) PST
 echo $( TZ='UTC' date )
+
+exit $result
