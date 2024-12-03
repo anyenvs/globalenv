@@ -68,21 +68,23 @@ test "$1" != "--list" -a "$1" != "-l" && {
     test -n "$versions" || break
     ## Check version with GLOBALENV_REPOS[${binary}_match]
     test -n "${GLOBALENV_REPOS[${binary}_match]}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | match("'${GLOBALENV_REPOS[${binary}_match]}'") ).browser_download_url else select(.tarball_url | contains("'${GLOBALENV_REPOS[${binary}_match]}'")).tarball_url end' <<<${RELEASES} |uniq) )
-    test -z "${_URLS}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'","'$(_myOSCap)'","'$(_isMac)'","'$(_isMacOS)'","'$(_isOSX)'") and contains("'$(_myARCH)'","'$(_myARM64)'","'$(_myAARCH64)'","'$(_myMARCH)'") ).browser_download_url else select(.tarball_url | contains("'${version##v}'")).tarball_url end' <<<${RELEASES} |uniq) )
+    test -z "${_URLS}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'","'$(_myOSCap)'","'$(_isMac)'","'$(_isMacOS)'","'$(_isOSX)'") and contains("'$(_myARCH)'","'$(_myARM64)'","'$(_myAARCH64)'","'$(_myMARCH)'","'$(_is386)'") ).browser_download_url else select(.tarball_url | contains("'${version##v}'")).tarball_url end' <<<${RELEASES} |uniq) )
     ## Check version without GLOBALENV_REPOS[${binary}_match]
     test -z "${_URLS}" && _URLS=( $( jq -r '.[] | {assets,tarball_url} | if (.assets != null) then .assets[]|select(.browser_download_url | contains("'${version##v}'") and contains("'$(_myOS)'","'$(_myOSCap)'","'$(_isMac)'","'$(_isMacOS)'","'$(_isOSX)'") ).browser_download_url else select(.tarball_url | contains("'${version##v}'")).tarball_url end' <<<${RELEASES} |uniq) )
     test -n "${_URLS}" && break
   done
-  echo "${_URLS[@]}" ;
+  echo _URLS = "${_URLS[@]}" ;
   #exit 0 ;
 }
 
 GLOBALENV_BIN=${GLOBALENV_REPOS[${binary}_bin]:-${binary}}
 test -n "${GLOBALENV_REPOS[${binary}_download]}" && _URLS=${GLOBALENV_REPOS[${binary}_download]}
 #test -n "${GLOBALENV_REPOS[${binary}_download]}" -a "${#_URLS[@]}" == "1" && { eval "wget -qO ${dst_path}/bin/${GLOBALENV_BIN} ${_URLS}" >&2 || { rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
-case $(test ${#_URLS[@]} -gt 1; echo $?) in
+for i in 1; do
+case $(test ${#_URLS[@]} -gt 1 -a "${#_URLS[@]}" != "0" ; echo $?) in
     1)  ## case single _URLS
         ## if file is tar.gz archive
+        test -n "${_URLS}" || break ;
         [[ ${_URLS} =~ \.tar.gz|\.tgz|\.gz|\.tar.xz|tarball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${_URLS}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
         ## if file is zip archive
         [[ ${_URLS} =~ \.zip|zipball ]] && { eval "wget -qP ${dst_path}/bin/ --content-disposition ${dst_path}/bin/\$(echo \${_URLS##*/}) ${_URLS}" >&2 || test -f ${dst_path}/bin/*.zip || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed" ; } ; }
@@ -95,6 +97,7 @@ case $(test ${#_URLS[@]} -gt 1; echo $?) in
     ;;
     *) ## other scenario ;;
 esac
+done
 test -n "${GLOBALENV_REPOS[${binary}_script]}" && ( eval "${GLOBALENV_REPOS[${binary}_script]}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed"; } )
 test -n "${GLOBALENV_REPOS[${binary}_postscript]}" && ( eval "${GLOBALENV_REPOS[${binary}_postscript]}" >&2 || { [ -n "${ENV_DEBUG}" ] || rm -rf ${dst_path} ; error_and_die "Install failed"; } )
 chmod +x "${dst_path}/bin"/${GLOBALENV_REPOS[${binary}_bin]:-*} || error_and_die "Install failed";

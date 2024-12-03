@@ -45,3 +45,4 @@ _isOSX()   { case $(_myOS) in darwin) echo osx ;; *) _myOS ;; esac; }
 _isMac()   { case $(_myOS) in darwin) echo mac;; *) echo $(_myOS);; esac; }
 _isMacOS() { case $(_myOS) in darwin) echo macOS;; *) echo $(_myOS);; esac; }
 _isApple() { case $(_myOS) in darwin) echo apple;; *) echo $(_myOS);; esac; }
+_is386()  { echo -n $(uname -m | sed 's/x86_64/386/g; s/armv7.*/armv7/g; s/aarch64/arm64/g'; ); }
