@@ -16,16 +16,17 @@ for arg do
   [[ "$arg" =~ -plan|\+plan ]]      && plan_cmd=true     && continue
   [[ "$arg" =~ -verbose|dry-run ]]  && _verbose=true     && continue
   [[ "$arg" =~ run-all ]]           && run_all=run-all   && continue
+  [[ "$arg" == "run" ]]             && run_all=run       && continue
   [[ "$arg" =~ replace ]]           && replace=apply     && continue
   [[ "$arg" =~ state|import|taint|untaint ]] && state_cmd=true
-  [[ "$arg" =~ terragrunt-include-dir|terragrunt-exclude-dir ]] && include_dir+=( "$arg '$1'" ) && _skip=true && continue
+  [[ "$arg" =~ include-dir|exclude-dir ]] && include_dir+=( "$arg '$1'" ) && _skip=true && continue
   args+=("$arg")
 done
 test -n "${_verbose}" && echo $?
 set -- "$@" "${replace}" "${args[@]}"
 test -n "${_verbose}" && echo ARGS = "$@"
 test -n "${_verbose}" && echo include_dir = "${include_dir[@]}"
-#exit 0
+# exit 0
 
 if [ -z $pattern ]
 then
@@ -34,8 +35,12 @@ then
   exit
 fi
 
+PARAMS_OLD="--terragrunt-forward-tf-stdout --terragrunt-no-color"
+## https://terragrunt.gruntwork.io/docs/reference/cli-options/#tf-forward-stdout
+PARAMS1="--tf-forward-stdout --no-color"
+PARAMS=""
 >&2 echo "===> Matching pattern '$pattern' against state..."
-state=$( eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive} ${include_dir[@]} --terragrunt-no-color --terragrunt-forward-tf-stdout state list" )
+state=$( eval "TG_SOURCE_UPDATE=false TG_NO_COLOR=true TG_TF_FORWARD_STDOUT=true $_cmd ${run_all+$run_all --non-interactive} ${include_dir[@]} $PARAMS state list" )
 for i in $state
 do
   if [[ $i =~ $pattern ]]
@@ -49,15 +54,15 @@ do
 done
 
 >&2 echo "===> Matching pattern '$pattern' against plan... ${plan_cmd:-skipping...}"
-test -n "${plan_cmd}" && plan=$(eval "TERRAGRUNT_SOURCE_UPDATE=false TERRAGRUNT_NO_COLOR=true $_cmd ${run_all+$run_all --terragrunt-non-interactive} --terragrunt-no-color --terragrunt-forward-tf-stdout ${include_dir[@]} plan -lock=false -no-color " | egrep '^  # ' | egrep -o '[^ ]+\.[^ ]+')
+test -n "${plan_cmd}" && plan=$(eval "TG_SOURCE_UPDATE=false TG_NO_COLOR=true TG_TF_FORWARD_STDOUT=true $_cmd ${run_all+$run_all --non-interactive} $PARAMS ${include_dir[@]} plan -lock=false -no-color " | egrep '^  # ' | egrep -o '[^ ]+\.[^ ]+')
 for i in $plan
 do
   if [[ $i =~ $pattern ]]
   then
-    >&2 echo "Match '$i' found"
-    test -z "${state_cmd}" -a -n "${replace}" && set -- "$@" "-replace='$i'"
-    test -z "${state_cmd}" -a -z "${replace}" && set -- "$@" "-target='$i'"
-    test -n "${state_cmd}" && set -- "$@" "'$i'"
+    >&2 echo "Match '$i' found" ;
+    test -z "${state_cmd}" -a -n "${replace}" && set -- "$@" "-replace='$i'" ;
+    test -z "${state_cmd}" -a -z "${replace}" && set -- "$@" "-target='$i'" ;
+    test -n "${state_cmd}" && set -- "$@" "'$i'" ;
   fi
 done
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-[ -n "$ENV_DEBUG" ] && set -x
+[ -n "${DEBUG}" ] && { export PS4='+ [${BASH_SOURCE##*/}:${LINENO}] ' ; set -x; }
 
 exec time "$(dirname `which $0`)/../bin/tgenv" exec terragrunt "$@"
 
